@@ -1,0 +1,68 @@
+.common-title {
+    margin-bottom: 10px;
+}
+
+.common-title::before {
+    content: "";
+    border-left: 4px solid #3370ff;
+    height: 16px;
+    margin-right: 2px;
+}
+
+.common-subtitle {
+    margin-bottom: 8px;
+}
+
+.common-subtitle::before {
+    content: "";
+    border-left: 4px solid #54555a;
+    height: 16px;
+    margin-right: 2px;
+}
+
+.relative {
+    position: relative;
+}
+
+.absolute {
+    position: absolute;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-between {
+    display: flex;
+    justify-content: space-between;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.flex-around {
+    display: flex;
+    justify-content: space-around;
+}
+
+.flex-evenly {
+    display: flex;
+    justify-content: flex-evenly;
+}
+
+.ml6 {
+    margin-left: 6%;
+}
+
+.ml2 {
+    margin-left: 2%;
+}
+
+.mr1 {
+    margin-left: 1%;
+}
+
+.mt15px {
+    margin-top: 15px;
+}

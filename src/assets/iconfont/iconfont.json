@@ -1,0 +1,282 @@
+{
+  "id": "2851540",
+  "name": "设备管理平台",
+  "font_family": "t-icon",
+  "css_prefix_text": "t-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "2291003",
+      "name": "线段",
+      "font_class": "polyline",
+      "unicode": "e623",
+      "unicode_decimal": 58915
+    },
+    {
+      "icon_id": "20673006",
+      "name": "脑图曲线",
+      "font_class": "mind",
+      "unicode": "e619",
+      "unicode_decimal": 58905
+    },
+    {
+      "icon_id": "8406888",
+      "name": "分享",
+      "font_class": "share",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "5155431",
+      "name": "锁住",
+      "font_class": "lock",
+      "unicode": "e649",
+      "unicode_decimal": 58953
+    },
+    {
+      "icon_id": "19456456",
+      "name": "向右箭头_向右箭头",
+      "font_class": "to-triangleSolid",
+      "unicode": "e633",
+      "unicode_decimal": 58931
+    },
+    {
+      "icon_id": "1304874",
+      "name": "编辑",
+      "font_class": "edit",
+      "unicode": "e620",
+      "unicode_decimal": 58912
+    },
+    {
+      "icon_id": "1788977",
+      "name": "预览",
+      "font_class": "attention",
+      "unicode": "e6a9",
+      "unicode_decimal": 59049
+    },
+    {
+      "icon_id": "2079876",
+      "name": "直线线段",
+      "font_class": "formArrow",
+      "unicode": "e63a",
+      "unicode_decimal": 58938
+    },
+    {
+      "icon_id": "2815733",
+      "name": "文件夹",
+      "font_class": "folder",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "5831301",
+      "name": "保存",
+      "font_class": "save",
+      "unicode": "e648",
+      "unicode_decimal": 58952
+    },
+    {
+      "icon_id": "9863076",
+      "name": "已解锁",
+      "font_class": "unlock",
+      "unicode": "e657",
+      "unicode_decimal": 58967
+    },
+    {
+      "icon_id": "16022885",
+      "name": "撤销",
+      "font_class": "reply",
+      "unicode": "e79f",
+      "unicode_decimal": 59295
+    },
+    {
+      "icon_id": "19567744",
+      "name": "描点忌用",
+      "font_class": "miaodianjiyong",
+      "unicode": "e79a",
+      "unicode_decimal": 59290
+    },
+    {
+      "icon_id": "20673002",
+      "name": "曲线",
+      "font_class": "curve",
+      "unicode": "e618",
+      "unicode_decimal": 58904
+    },
+    {
+      "icon_id": "24073855",
+      "name": "线宽1",
+      "font_class": "lineWidth",
+      "unicode": "e62b",
+      "unicode_decimal": 58923
+    },
+    {
+      "icon_id": "8493479",
+      "name": "六边形",
+      "font_class": "hexagon",
+      "unicode": "e652",
+      "unicode_decimal": 58962
+    },
+    {
+      "icon_id": "17953007",
+      "name": "五边形",
+      "font_class": "pentagon",
+      "unicode": "e61a",
+      "unicode_decimal": 58906
+    },
+    {
+      "icon_id": "23991837",
+      "name": "视频",
+      "font_class": "pc",
+      "unicode": "e611",
+      "unicode_decimal": 58897
+    },
+    {
+      "icon_id": "554471",
+      "name": "向左箭头",
+      "font_class": "leftArrow",
+      "unicode": "e73c",
+      "unicode_decimal": 59196
+    },
+    {
+      "icon_id": "554472",
+      "name": "向右箭头",
+      "font_class": "rightArrow",
+      "unicode": "e73d",
+      "unicode_decimal": 59197
+    },
+    {
+      "icon_id": "1305100",
+      "name": "云",
+      "font_class": "cloud",
+      "unicode": "e634",
+      "unicode_decimal": 58932
+    },
+    {
+      "icon_id": "1506638",
+      "name": "文档",
+      "font_class": "file",
+      "unicode": "e66b",
+      "unicode_decimal": 58987
+    },
+    {
+      "icon_id": "2681717",
+      "name": "五角星",
+      "font_class": "pentagram",
+      "unicode": "e614",
+      "unicode_decimal": 58900
+    },
+    {
+      "icon_id": "4354256",
+      "name": "形状-三角形",
+      "font_class": "triangle",
+      "unicode": "eb99",
+      "unicode_decimal": 60313
+    },
+    {
+      "icon_id": "5831265",
+      "name": "文字",
+      "font_class": "text",
+      "unicode": "e643",
+      "unicode_decimal": 58947
+    },
+    {
+      "icon_id": "7594403",
+      "name": "24gl-circle",
+      "font_class": "circle",
+      "unicode": "ea97",
+      "unicode_decimal": 60055
+    },
+    {
+      "icon_id": "7594407",
+      "name": "24gl-square",
+      "font_class": "square",
+      "unicode": "ea98",
+      "unicode_decimal": 60056
+    },
+    {
+      "icon_id": "8540135",
+      "name": "ai 消息框 file",
+      "font_class": "message",
+      "unicode": "e610",
+      "unicode_decimal": 58896
+    },
+    {
+      "icon_id": "11195044",
+      "name": "钢笔",
+      "font_class": "pencil",
+      "unicode": "e65e",
+      "unicode_decimal": 58974
+    },
+    {
+      "icon_id": "11372711",
+      "name": "图片",
+      "font_class": "image",
+      "unicode": "e8ba",
+      "unicode_decimal": 59578
+    },
+    {
+      "icon_id": "11783857",
+      "name": "双向箭头",
+      "font_class": "twowayArrow",
+      "unicode": "e641",
+      "unicode_decimal": 58945
+    },
+    {
+      "icon_id": "12842806",
+      "name": "w_云",
+      "font_class": "w_yun",
+      "unicode": "e67e",
+      "unicode_decimal": 59006
+    },
+    {
+      "icon_id": "17521049",
+      "name": "直线",
+      "font_class": "line",
+      "unicode": "e602",
+      "unicode_decimal": 58882
+    },
+    {
+      "icon_id": "20825980",
+      "name": "立方体",
+      "font_class": "cube",
+      "unicode": "e651",
+      "unicode_decimal": 58961
+    },
+    {
+      "icon_id": "22383119",
+      "name": "菱形",
+      "font_class": "diamond",
+      "unicode": "edda",
+      "unicode_decimal": 60890
+    },
+    {
+      "icon_id": "22383628",
+      "name": "圆角矩形",
+      "font_class": "rectangle",
+      "unicode": "edf8",
+      "unicode_decimal": 60920
+    },
+    {
+      "icon_id": "6616997",
+      "name": "关闭",
+      "font_class": "guanbi",
+      "unicode": "eca0",
+      "unicode_decimal": 60576
+    },
+    {
+      "icon_id": "902049",
+      "name": "密码",
+      "font_class": "mima",
+      "unicode": "e639",
+      "unicode_decimal": 58937
+    },
+    {
+      "icon_id": "925502",
+      "name": "用户名",
+      "font_class": "yonghuming",
+      "unicode": "e65c",
+      "unicode_decimal": 58972
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+.common-title {
+    margin-bottom: 4px;
+}
+
+.common-title::before {
+    content: "";
+    border-left: 4px solid #3370ff;
+    height: 16px;
+    margin-right: 2px;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-between {
+    display: flex;
+    justify-content: space-between;
+}
+
+.flex-around {
+    display: flex;
+    justify-content: space-around;
+}
+
+.mt1 {
+    margin-top: 1%;
+}
+
