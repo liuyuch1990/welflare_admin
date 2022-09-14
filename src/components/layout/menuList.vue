@@ -88,6 +88,12 @@ export default {
           title: "退换货管理",
           icon: "el-icon-s-home",
         },
+        {
+          index: 7,
+          keyPath: "/swiper",
+          title: "轮播图管理",
+          icon: "el-icon-s-home",
+        },
       ],
       isCollapse: false,
       activeIndex: "/",

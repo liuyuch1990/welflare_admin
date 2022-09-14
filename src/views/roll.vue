@@ -282,7 +282,7 @@
                           @confirm="changeOrderAdmin(scope)"
                   >
                     <el-button slot="reference" type="text"
-                    >确认收货</el-button
+                    >确认退货</el-button
                     >
                   </el-popconfirm>
                 </p>

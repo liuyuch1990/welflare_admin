@@ -64,6 +64,13 @@ const routes = [{
                     import ('@/views/roll')
             },
             {
+                path: "/swiper",
+                mate: { title: 'swiper' },
+                name: '轮播图',
+                component: () =>
+                    import ('@/views/swiper')
+            },
+            {
                 path: "/user",
                 mate: { title: 'user' },
                 name: '用户管理',
