@@ -254,27 +254,47 @@
             </el-table-column>
             <el-table-column label="操作" align="center" min-width="140px">
               <template slot-scope="scope">
-                <p v-if="scope.row.status == 0">
-                  <el-button
-                    type="text"
-                    @click="handleSendLogistic(scope.row)"
-                    style="margin-left: 0"
-                    >发货|</el-button
-                  >
+<!--                <p v-if="scope.row.status == 0">-->
+<!--                  <el-button-->
+<!--                    type="text"-->
+<!--                    @click="handleSendLogistic(scope.row)"-->
+<!--                    style="margin-left: 0"-->
+<!--                    >发货|</el-button-->
+<!--                  >-->
+<!--                  <el-popconfirm-->
+<!--                    :title="'确定要取消该订单吗？'"-->
+<!--                    @confirm="handleCancel(scope)"-->
+<!--                  >-->
+<!--                    <el-button slot="reference" type="text"-->
+<!--                      >取消订单|</el-button-->
+<!--                    >-->
+<!--                  </el-popconfirm>-->
+<!--                  <el-button-->
+<!--                    type="text"-->
+<!--                    @click="handleEdit(scope)"-->
+<!--                    style="margin-left: 0"-->
+<!--                    >修改地址</el-button-->
+<!--                  >-->
+<!--                </p>-->
+                <p v-if="scope.row.status == 3">
                   <el-popconfirm
-                    :title="'确定要取消该订单吗？'"
-                    @confirm="handleCancel(scope)"
+                          :title="'确定要收到该订单吗？'"
+                          @confirm="handleCancel(scope)"
                   >
                     <el-button slot="reference" type="text"
-                      >取消订单|</el-button
+                    >确认收货</el-button
                     >
                   </el-popconfirm>
-                  <el-button
-                    type="text"
-                    @click="handleEdit(scope)"
-                    style="margin-left: 0"
-                    >修改地址</el-button
+                </p>
+                <p v-if="scope.row.status == 4">
+                  <el-popconfirm
+                          :title="'确定对该订单换货吗？'"
+                          @confirm="handleCancel(scope)"
                   >
+                    <el-button slot="reference" type="text"
+                    >确认换货</el-button
+                    >
+                  </el-popconfirm>
                 </p>
                 <p v-else-if="scope.row.status == 1">
                   <el-button type="text" @click="handleViewLogistic(scope.row)"
@@ -578,11 +598,6 @@ export default {
       ordersList: [], //转换中的list
       catList: [
         {
-          name: "0",
-          label: "全部",
-          id: "6",
-        },
-        {
           name: "1",
           label: "待退货",
           id: "3",
@@ -592,11 +607,22 @@ export default {
           label: "待换货",
           id: "4",
         },
+        {
+          name: "3",
+          label: "已退货",
+          id: "5",
+        },
+        {
+          name: "4",
+          label: "已换货",
+          id: "6",
+        },
       ],
       //查询商品的列表
       queryParams: {
         pageNum: 1,
         pageSize: 10,
+        status: 3,
         userPhone: "",
         goodsType: "",
         goodsName: "",
@@ -921,10 +947,13 @@ export default {
       } else if (row.name == 4) {
         this.queryParams.status = 4;
         this.queryParams.pageNum = 1;
-      } else if (row.name == 0) {
-        this.queryParams.status = 0;
+      } else if (row.name == 5) {
+        this.queryParams.status = 5;
         this.queryParams.pageNum = 1;
-      } else {
+      } else if (row.name == 6) {
+        this.queryParams.status = 6;
+        this.queryParams.pageNum = 1;
+      }else {
         delete this.queryParams.status;
         this.queryParams.pageNum = 1;
       }
