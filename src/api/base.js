@@ -11,6 +11,7 @@ export const BASED = {
     getOrderInport: "/order/importInfo", //批量发货
     getOrderOut: "/order/exportExcel", //批量导出
     editOrder: "/order/edit", //修改订单
+    changeOrderAdmin: "/order/edit", //修改订单
     getOrderLogistic: "/order/queryLogistics", //掉物流的接口
     sendNone: "/order/setBatchOrderStatusList", // 空发货
     editLogistics: "/order/editLogistics", // 修改物流信息（物流单号和物流公司）

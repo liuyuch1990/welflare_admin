@@ -279,7 +279,7 @@
                 <p v-if="scope.row.status == 3">
                   <el-popconfirm
                           :title="'确定要收到该订单吗？'"
-                          @confirm="handleCancel(scope)"
+                          @confirm="changeOrderAdmin(scope)"
                   >
                     <el-button slot="reference" type="text"
                     >确认收货</el-button
@@ -289,7 +289,7 @@
                 <p v-if="scope.row.status == 4">
                   <el-popconfirm
                           :title="'确定对该订单换货吗？'"
-                          @confirm="handleCancel(scope)"
+                          @confirm="changeOrderAdmin(scope)"
                   >
                     <el-button slot="reference" type="text"
                     >确认换货</el-button
@@ -1012,14 +1012,24 @@ export default {
       }
     },
     //取消订单
-    handleCancel(row) {
+    changeOrderAdmin(row) {
       this.$request
-        .post(this.base.editOrder, { orderId: row.row.orderId, status: 2 })
+        .post(this.base.changeOrderAdmin, { orderId: row.row.orderId, status: row.row.status })
         .then(() => {
           // console.log(res);
           this.$message.success("操作成功！");
           this.getList();
         });
+    },
+    //取消订单
+    handleCancel(row) {
+      this.$request
+              .post(this.base.editOrder, { orderId: row.row.orderId, status: 2 })
+              .then(() => {
+                // console.log(res);
+                this.$message.success("操作成功！");
+                this.getList();
+              });
     },
     //修改地址
     handleEdit(row) {
