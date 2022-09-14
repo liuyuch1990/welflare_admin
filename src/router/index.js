@@ -57,6 +57,13 @@ const routes = [{
                     import ('@/views/order')
             },
             {
+                path: "/roll",
+                mate: { title: 'roll' },
+                name: '退换货',
+                component: () =>
+                    import ('@/views/roll')
+            },
+            {
                 path: "/user",
                 mate: { title: 'user' },
                 name: '用户管理',

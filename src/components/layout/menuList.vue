@@ -82,6 +82,12 @@ export default {
           title: "用户管理",
           icon: "el-icon-s-home",
         },
+        {
+          index: 6,
+          keyPath: "/roll",
+          title: "退换货管理",
+          icon: "el-icon-s-home",
+        },
       ],
       isCollapse: false,
       activeIndex: "/",
