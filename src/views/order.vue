@@ -59,7 +59,14 @@
               >
               </el-input> </el-form-item
           ></el-col>
-          <el-col :xs="24" :sm="12" :md="8" :lg="4" :xl="4">
+          <el-col
+            :xs="24"
+            :sm="12"
+            :md="8"
+            :lg="4"
+            :xl="4"
+            v-if="this.flag == 3"
+          >
             <el-form-item label="公司编码" prop="cardNum">
               <el-select
                 size="small"
@@ -86,7 +93,7 @@
                 end-placeholder="结束日期"
                 :default-time="['12:00:00']"
                 value-format="yyyy-MM-dd HH:mm:ss"
-                style="width:100%"
+                style="width: 100%"
               >
               </el-date-picker> </el-form-item
           ></el-col>
@@ -131,13 +138,13 @@
         >
       </el-popover>
       &nbsp;
-      <!-- <el-button
+      <el-button
         @click="handleImport"
         type="primary"
         size="small"
         icon="el-icon-upload"
         >批量发货</el-button
-      > -->
+      >
       &nbsp;
       <el-popover placement="top" width="160" v-model="visibleSendNone">
         <p>确定空发货吗？</p>
@@ -240,12 +247,9 @@
                   <li v-for="item in scope.row.express" :key="item.id">
                     <p>{{ item.logisticsCompany }}</p>
                     <p>
-                      <el-button
-                        type="text"
-                        @click="handleView(item)"
-                        v-if="scope.row.status == 1"
-                        >{{ item.courierNumber }}</el-button
-                      >
+                      <el-button type="text" v-if="scope.row.status == 1">{{
+                        item.courierNumber
+                      }}</el-button>
                     </p>
                   </li>
                 </ul>
@@ -367,6 +371,7 @@
         append-to-body
         :close-on-press-escape="false"
         :close-on-click-modal="false"
+        style="text-align: center"
       >
         <el-upload
           class="upload-demo"
@@ -538,6 +543,7 @@ export default {
       }
     };
     return {
+      flag: sessionStorage.getItem("onlineAdmin-flag"),
       dialogVisiblelogisticsMany: false,
       //批量导出
       visibleDwnload: false,
@@ -625,7 +631,13 @@ export default {
       }, //导出请求的参数
       statusSelected: "", //选择的订单状态
       addressFormRules: {
-        phone: [{ validator: validateUserPhone, trigger: "blur" }],
+        phone: [
+          { required: true, message: "请输入手机号", trigger: "blur" },
+          { validator: validateUserPhone, trigger: "blur" },
+        ],
+        addrName: [
+          { required: true, message: "请输入收货人", trigger: "blur" },
+        ],
         address: [
           { required: true, message: "请输入收货地址", trigger: "blur" },
         ],
@@ -682,15 +694,21 @@ export default {
     },
     //查看物流的事件
     handleViewLogistic(e) {
-      this.dialogVisiblelogisticsMany = true;
-      if (JSON.parse(JSON.stringify(e.express))) {
-        this.logisticsInformation = JSON.parse(JSON.stringify(e.express));
+      console.log(e.expres);
+      if (e.express) {
+        this.dialogVisiblelogisticsMany = true;
+        if (JSON.parse(JSON.stringify(e.express))) {
+          this.logisticsInformation = JSON.parse(JSON.stringify(e.express));
+        } else {
+          this.logisticsInformation = [];
+        }
+        this.activities = []; //查看物流前，将物流信息置为空
+        // console.log(this.logisticsInformation);
+        this.orderId = e.orderId;
       } else {
-        this.logisticsInformation = [];
+        this.dialogSendLogistic = true;
+        this.orderId = e.orderId;
       }
-      this.activities = []; //查看物流前，将物流信息置为空
-      // console.log(this.logisticsInformation);
-      this.orderId = e.orderId;
     },
     //查看物流的事件
     handleView(item) {
@@ -702,10 +720,6 @@ export default {
         .then((res) => {
           this.activities = JSON.parse(res.data);
           this.activities[0].color = "#ff6700";
-          // console.log(this.activities);
-        })
-        .catch((err) => {
-          this.$message.error(err.message);
         });
     },
     //自定义上传之前事件文件的判断
@@ -744,7 +758,7 @@ export default {
         .then(() => {
           this.$message.success("物流信息更新成功");
           this.dialogVisibleGoods = false;
-          this.getOrders();
+          this.getList();
         })
         .catch((err) => {
           this.$message.error(err.message);

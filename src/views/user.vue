@@ -1,7 +1,7 @@
 <!--
  * @Author: 1vv
  * @Date: 2021-11-09 13:37:04
- * @LastEditTime: 2022-02-23 16:57:06
+ * @LastEditTime: 2022-03-30 18:47:05
  * @LastEditors: Please set LastEditors
  * @Description: 用户管理
  * @FilePath: \online-shop-admin\src\views\user.vue
@@ -11,7 +11,7 @@
     <div class="content">
       <el-form :model="queryParams" ref="queryForm">
         <el-row :gutter="10">
-          <el-col  :xs="24" :sm="12" :md="8" :lg="4" :xl="4">
+          <el-col :xs="24" :sm="12" :md="8" :lg="4" :xl="4">
             <el-form-item label="手机号" prop="userPhone">
               <el-input
                 v-model="queryParams.userPhone"
@@ -20,7 +20,7 @@
               ></el-input>
             </el-form-item>
           </el-col>
-          <el-col  :xs="24" :sm="12" :md="8" :lg="4" :xl="4">
+          <el-col :xs="24" :sm="12" :md="8" :lg="4" :xl="4">
             <el-form-item label="工号" prop="userNo">
               <el-input
                 v-model="queryParams.userNo"
@@ -29,7 +29,14 @@
               ></el-input>
             </el-form-item>
           </el-col>
-          <el-col  :xs="24" :sm="12" :md="8" :lg="4" :xl="4">
+          <el-col
+            :xs="24"
+            :sm="12"
+            :md="8"
+            :lg="4"
+            :xl="4"
+            v-if="this.flag == 3"
+          >
             <el-form-item label="公司编码" prop="userCom">
               <el-input
                 v-model="queryParams.userCom"
@@ -87,7 +94,7 @@
         </el-row>
         <!-- 表格 -->
         <el-row :gutter="20" style="margin-top: 2%">
-          <el-col :span="4"  :xs="24" :sm="24" :lg="24">
+          <el-col :span="4" :xs="24" :sm="24" :lg="24">
             <el-tabs v-model="activeName" @tab-click="handleClickTab">
               <el-tab-pane
                 :label="item.label"
@@ -276,15 +283,15 @@ export default {
     };
 
     return {
+      flag: sessionStorage.getItem("onlineAdmin-flag"),
       form: {},
       tableData: [],
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        userPhone:undefined,
-        userNo:undefined,
-        userCom:undefined
-
+        userPhone: undefined,
+        userNo: undefined,
+        userCom: undefined,
       },
       typeOptions: [
         { value: "A", label: "A" },
@@ -316,16 +323,16 @@ export default {
     this.getList();
   },
   methods: {
-    filetrSearch(){
-      this.queryParams.pageNum=1;
+    filetrSearch() {
+      this.queryParams.pageNum = 1;
       this.getList();
     },
     getList() {
       this.loading = true;
       this.$request.post(this.api.getUserList, this.queryParams).then((res) => {
-          this.tableData = res.data.rows;
-          this.total = res.data.total;
-          this.loading = false;
+        this.tableData = res.data.rows;
+        this.total = res.data.total;
+        this.loading = false;
       });
     },
     //   重置密码
@@ -341,8 +348,8 @@ export default {
       queryForm.userPwd = this.$md5(queryForm.userPwd) + "aab";
       console.log(queryForm);
       this.$request.post(this.api.updateUserInfo, queryForm).then(() => {
-          this.$message.success("操作成功！");
-          this.closeDialog();
+        this.$message.success("操作成功！");
+        this.closeDialog();
       });
     },
     submit(refName) {

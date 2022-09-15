@@ -1,7 +1,7 @@
 <!--
  * @Author: 1vv
  * @Date: 2021-11-08 16:45:32
- * @LastEditTime: 2022-02-23 16:57:18
+ * @LastEditTime: 2022-04-08 17:29:21
  * @LastEditors: Please set LastEditors
  * @Description: 额度管理-卡号
  * @FilePath: \online-shop-admin\src\views\wallet.vue
@@ -34,7 +34,7 @@
               </el-date-picker>
             </el-form-item>
           </el-col>
-          <el-col :xs="24" :sm="12" :md="8" :lg="4" :xl="4">
+          <el-col :xs="24" :sm="12" :md="8" :lg="4" :xl="4" v-if="this.flag==3">
             <el-form-item label="公司编码" prop="comNum">
               <el-select
                 v-model="queryParams.comNum"
@@ -61,18 +61,18 @@
               ></el-input> </el-form-item
           ></el-col>
           <el-col :xs="24" :sm="12" :md="8" :lg="4" :xl="4">
-            <el-form-item label="礼品卡种类" prop="giftCardName">
+            <el-form-item label="礼品卡种类" prop="cardTypeId">
               <el-select
-                v-model="queryParams.giftCardName"
+                v-model="queryParams.cardTypeId"
                 placeholder="请选择"
                 style="width: 100%"
                 size="small"
               >
                 <el-option
                   v-for="item in kindTYpeOptions"
-                  :key="item"
-                  :label="item"
-                  :value="item"
+                  :key="item.id"
+                  :label="item.cardTypeName"
+                  :value="item.id"
                 >
                 </el-option>
               </el-select> </el-form-item
@@ -94,7 +94,7 @@
                 </el-option>
               </el-select> </el-form-item
           ></el-col>
-                <el-col :xs="24" :sm="12" :md="8" :lg="4" :xl="4">
+          <el-col :xs="24" :sm="12" :md="8" :lg="4" :xl="4">
             <el-form-item label="手机号" prop="userPhone">
               <el-input
                 size="small"
@@ -165,7 +165,7 @@
                   >
                   </el-table-column>
                   <el-table-column
-                    prop="giftCardName"
+                    prop="cardName"
                     align="center"
                     label="礼品卡种类"
                     :show-overflow-tooltip="true"
@@ -261,7 +261,7 @@
       >
         <div class="dialog-content">
           <el-form :model="form" :rules="rulesUpload" ref="uploadForm">
-            <el-form-item label="公司编码" prop="comNum">
+            <!-- <el-form-item label="公司编码" prop="comNum">
               <el-select
                 v-if="nextStep == 1"
                 v-model="form.comNum"
@@ -279,24 +279,26 @@
               <span v-if="nextStep == 2">
                 {{ this.form.comNum }}
               </span>
-            </el-form-item>
-            <el-form-item label="礼品卡种类" prop="cardName">
+            </el-form-item> -->
+            <el-form-item label="礼品卡种类" prop="cardTypeId">
               <el-select
                 v-if="nextStep == 1"
-                v-model="form.cardName"
+                v-model="form.cardTypeId"
                 placeholder="请选择"
                 style="width: 100%"
+                ref="selection"
+                @change="getCardTypeNameChange($event)"
               >
                 <el-option
                   v-for="item in kindTYpeOptions"
-                  :key="item"
-                  :label="item"
-                  :value="item"
+                  :key="item.id"
+                  :label="item.cardTypeName"
+                  :value="item.id"
                 >
                 </el-option>
               </el-select>
               <span v-if="nextStep == 2">
-                {{ this.form.cardName }}
+                {{ cardTypeNameChange }}
               </span>
             </el-form-item>
 
@@ -409,6 +411,7 @@
 export default {
   data() {
     return {
+      flag:sessionStorage.getItem('onlineAdmin-flag'),
       form: {},
       nextStep: 1, // 上传时下一步状态
       tableData: [],
@@ -420,8 +423,10 @@ export default {
         comNum: undefined,
         quotaMultiple: undefined,
         isTrue: undefined,
-        giftCardName: undefined,
+        // cardName: undefined,
+        cardTypeId: undefined,
       },
+      cardTypeNameChange: "",
       tableTab: [
         {
           name: "全部",
@@ -456,9 +461,9 @@ export default {
       formData: {},
       uploadFile: "",
       rulesUpload: {
-        comNum: [
-          { required: true, message: "请选择公司编码", trigger: "blur" },
-        ],
+        // comNum: [
+        //   { required: true, message: "请选择公司编码", trigger: "blur" },
+        // ],
         cardName: [
           { required: true, message: "请选择礼品卡种类", trigger: "blur" },
         ],
@@ -486,7 +491,6 @@ export default {
       this.form = JSON.parse(JSON.stringify(row));
     },
     handleUnbound(row) {
-      console.log(row);
       this.$request
         .get(this.api.unboundCard + row.giftCardId)
         .then(() => {
@@ -502,29 +506,40 @@ export default {
         giftCardId: this.form.giftCardId,
         validDate: this.form.validDate,
       };
-      this.$request.post(this.api.updateCard, queryParam).then(() => {
+      this.$request
+        .post(this.api.updateCard, queryParam)
+        .then(() => {
           this.$message.success("操作成功！");
           this.getList();
           this.closeDialog();
-      }).carch(err=>{
-         this.$message.error(err.message);
+        })
+        .carch((err) => {
+          this.$message.error(err.message);
+        });
+    },
+    // 导入礼品卡中礼品卡种类字段显示
+    getCardTypeNameChange(event) {
+      let obj = this.kindTYpeOptions.find((item) => {
+        return item.id === event;
       });
+      this.cardTypeNameChange=obj.cardTypeName
     },
     // 导入
     submit() {
       this.formData = new FormData();
       this.formData.append("file", this.uploadFile);
-      this.formData.append("comNum", this.form.comNum);
-      this.formData.append("cardName", this.form.cardName);
+      // this.formData.append("comNum", this.form.comNum);
+      this.formData.append("cardTypeId", this.form.cardTypeId);
       this.$request
         .post(this.api.importExcelCard, this.formData)
         .then(() => {
-            this.$message.success("操作成功！");
-            this.$refs["uploadExcel"].clearFiles();
-            this.getList();
-            this.closeDialog();
-        }).catch(err=>{
-           this.$message.error(err.message);
+          this.$message.success("操作成功！");
+          this.$refs["uploadExcel"].clearFiles();
+          this.getList();
+          this.closeDialog();
+        })
+        .catch((err) => {
+          this.$message.error(err.message);
         });
     },
     uploadExcel(param) {
@@ -533,13 +548,13 @@ export default {
     // 获取礼品卡种类下拉
     getKindCardTypeOptions() {
       this.$request.get(this.api.getKindCardType).then((res) => {
-          this.kindTYpeOptions = res.data;
+        this.kindTYpeOptions = res.data;
       });
     },
     // 获取公司编码下拉
     getUseComOption() {
       this.$request.get(this.api.useComOption).then((res) => {
-          this.useComOption = res.data;
+        this.useComOption = res.data;
       });
     },
     // 上传时点击下一步
@@ -588,7 +603,7 @@ export default {
     },
     reset() {
       // this.$nextTick(() => {
-        this.$refs["queryForm"].resetFields();
+      this.$refs["queryForm"].resetFields();
       // });
 
       this.getList();

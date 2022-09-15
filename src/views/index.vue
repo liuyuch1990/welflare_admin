@@ -1,7 +1,7 @@
 <!--
  * @Author: 1vv
  * @Date: 2021-11-08 15:40:38
- * @LastEditTime: 2022-02-23 16:56:41
+ * @LastEditTime: 2022-03-31 15:50:31
  * @LastEditors: Please set LastEditors
  * @Description: 商品管理
  * @FilePath: \online-shop-admin\src\views\goods.vue
@@ -19,10 +19,10 @@
               @click="handleAdd"
               >发布商品</el-button
             >
-              <el-button
-              plain
-              size="small"
-              @click="clearPic"
+            <el-button type="primary" size="small" @click="orderConfig"
+              >商品分类配置</el-button
+            >
+            <el-button plain size="small" @click="clearPic"
               >清理无关图片</el-button
             >
           </el-col>
@@ -48,6 +48,7 @@
                   >
                     <template slot-scope="scoped">
                       <div class="flex-between">
+                        <!-- {{$target + scoped.row.coverPath}} -->
                         <img
                           class="goods-img"
                           :src="$target + scoped.row.coverPath"
@@ -67,7 +68,7 @@
                   <el-table-column
                     align="center"
                     label="类别"
-                    :formatter="goodsFormatter"
+                    prop="typeName"
                     :show-overflow-tooltip="true"
                   ></el-table-column>
                   <el-table-column
@@ -142,10 +143,10 @@
               style="width: 100%"
             >
               <el-option
-                v-for="item in typeOptions"
-                :key="item.goodsType"
-                :label="item.typeName"
-                :value="item.goodsType"
+                v-for="item in ownGoodsTypeList"
+                :key="item.dictCode"
+                :label="item.dictName"
+                :value="item.dictCode"
               >
               </el-option>
             </el-select>
@@ -208,12 +209,133 @@
           >
         </div>
       </el-dialog>
+
+      <!-- 商品分类 -->
+      <el-dialog
+        width="200"
+        :title="title"
+        @close="closeDialogConfig"
+        :visible.sync="visibleGoodsConfig"
+        :close-on-press-escape="false"
+        :close-on-click-modal="false"
+      >
+        <el-button
+          type="primary"
+          @click="showGoodsTypeAdd = !showGoodsTypeAdd"
+          style="margin-bottom: 10px"
+          >{{ showGoodsTypeAdd ? "去添加" : "管理类别" }}</el-button
+        >
+        <div v-if="showGoodsTypeAdd">
+          <el-table :data="ownGoodsTypeList" row-key="id">
+            <el-table-column
+              prop="dictName"
+              align="center"
+              label="商品名称"
+              :show-overflow-tooltip="true"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="dictCode"
+              align="center"
+              label="商品编码"
+              :show-overflow-tooltip="true"
+            >
+            </el-table-column>
+            <el-table-column align="center" label="操作" width="180px">
+              <template slot-scope="scope">
+                <el-popconfirm
+                  :title="'确定要删除<' + scope.row.dictName + '>吗？'"
+                  @confirm="handleDeleteGoodsType(scope.row)"
+                >
+                  <el-button
+                    slot="reference"
+                    size="mini"
+                    type="text"
+                    icon="el-icon-delete"
+                    >删除</el-button
+                  >
+                </el-popconfirm>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <div v-if="!showGoodsTypeAdd">
+          <el-button
+            type="primary"
+            plain
+            size="small"
+            @click="chooseOther = !chooseOther"
+            >{{
+              chooseOther ? "本公司录入" : "查看/选择所有公司分类"
+            }}</el-button
+          >
+          <el-form
+            :model="form"
+            :rules="rules"
+            class="config-form"
+            ref="goodsConfig"
+          >
+            <!-- 选择所有公司 -->
+            <div v-if="!chooseOther">
+              <el-form-item label="商品分类" prop="dictName">
+                <el-input
+                  size="small"
+                  v-model="goodsTypeForm.dictName"
+                  placeholder="请输入分类"
+                ></el-input>
+              </el-form-item>
+              <el-form-item prop="dictCode" label="商品编码">
+                <el-input
+                  size="small"
+                  v-model="goodsTypeForm.dictCode"
+                  maxlength="3"
+                  placeholder="输入code(3位以内的数字或字符)"
+                ></el-input>
+              </el-form-item>
+            </div>
+            <!-- 本公司录入 -->
+            <div v-if="chooseOther">
+              <el-form-item label="商品分类" prop="dictName">
+                <el-select
+                  v-model="goodsTypeForm.dictName"
+                  size="small"
+                  placeholder="请选择分类"
+                  style="width: 100%"
+                  @change="changeConfigForm"
+                >
+                  <el-option
+                    v-for="i in allGoodsTypeList"
+                    :key="i.dictCode"
+                    :label="i.dictName"
+                    :value="i.dictCode"
+                  >
+                  </el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item prop="dictCode" label="商品编码">
+                <el-input
+                  :disabled="true"
+                  size="small"
+                  v-model="goodsTypeForm.dictCode"
+                  placeholder="输入code(数字字符)"
+                ></el-input>
+              </el-form-item>
+            </div>
+          </el-form>
+        </div>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="closeDialogConfig()">取 消</el-button>
+          <el-button type="primary" @click="handlleGoodsTypeSub('goodsConfig')"
+            >确 定</el-button
+          >
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
 
 <script>
-import { GoodsTypeVariable } from "@/utils/Variable";
+// import { GoodsTypeVariable } from "@/utils/Variable";
 export default {
   data() {
     return {
@@ -226,12 +348,15 @@ export default {
       noneAddImgCover: true,
       noneAddImg: true,
       tableData: [],
+      chooseOther: false, //选择/添加本公司的商品编码
+      showGoodsTypeAdd: true, // 添加/查看本公司商品类别
       queryParams: {
         pageNum: 1,
         pageSize: 10,
         sellOut: "",
       },
-      typeOptions: [],
+      ownGoodsTypeList: [], //本公司的商品分类
+      allGoodsTypeList: [], //所有公司的商品分类
       tableTab: [
         {
           name: "2",
@@ -246,9 +371,12 @@ export default {
           label: "已售罄",
         },
       ],
+      // configList: [{ dictName: "", dictCode: "" }],
+      goodsTypeForm: {},
       activeName: "2",
       total: 0,
       visibleGoods: false,
+      visibleGoodsConfig: false,
       title: "",
       loading: true,
       rules: {
@@ -278,22 +406,10 @@ export default {
   },
   mounted() {
     this.getList();
-    this.typeNameOptions();
+    this.goodsOwnType();
+    this.goodsAllType();
   },
   methods: {
-    typeNameOptions() {
-      this.typeOptions = GoodsTypeVariable;
-    },
-    // 商品种类分类
-    goodsFormatter(row) {
-      let typeName = "";
-      GoodsTypeVariable.forEach((v) => {
-        if (row.goodsType == v.goodsType) {
-          typeName = v.typeName;
-        }
-      });
-      return typeName;
-    },
     getList() {
       this.loading = true;
       this.$request.post(this.api.goodsList, this.queryParams).then((res) => {
@@ -395,14 +511,7 @@ export default {
       this.form = JSON.parse(JSON.stringify(row));
       this.title = "编辑商品";
       this.showPic = false;
-      // this.selectGoods(row.goodsId)
     },
-    // selectGoods(id){
-    //   this.$request.get(this.api.selectGoods+id).then(res=>{
-    //     console.log(res);
-    //     this.form=res.data
-    //   })
-    // },
     // // 修改
     // 提交按钮
     handlleSubmit(refName) {
@@ -440,35 +549,37 @@ export default {
         }
       });
     },
-    // 删除
+    // 删除商品列表
     handleDelete(row) {
       this.$request.get(this.api.deleteGoods + row.goodsId).then(() => {
         this.$message.success("操作成功！");
         this.getList();
       });
     },
+
+    // 删除商品类别
+    handleDeleteGoodsType(row) {
+      this.$request.get(this.api.deleteGoodsType + row.dictCode).then(() => {
+        this.$message.success("操作成功！");
+        this.goodsOwnType();
+      });
+    },
     closeDialog() {
       this.visibleGoods = false;
       this.noneAddImgCover = true;
+
       this.noneAddImg = true;
       if (this.showPic) {
         // showPic为true是上传
         this.$refs["uploadFileCover"].clearFiles();
         this.$refs["uploadFile"].clearFiles();
       }
-      this.form={};
+      this.form = {};
       this.form.pics = [];
       this.removeImgCover = [];
       this.removeImg = [];
       this.imgSort = 1;
-      console.log(
-        "this.form:",
-        this.form.pics,
-        this.removeImgCover,
-        this.removeImg
-      );
     },
-
     // 切换tab
     handleClickTab(tab) {
       console.log(tab);
@@ -485,12 +596,79 @@ export default {
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
     },
+
+    orderConfig() {
+      this.visibleGoodsConfig = true;
+      this.title = "编辑商品分类信息";
+    },
+    // 获取本公司商品类别
+    goodsOwnType() {
+      this.$request.get(this.api.goodsOwnTypeList).then((res) => {
+        this.ownGoodsTypeList = res.data;
+      });
+    },
+    // 获取全部公司的商品类别
+    goodsAllType() {
+      this.$request.get(this.api.goodsAllTypeList).then((res) => {
+        this.allGoodsTypeList = res.data;
+      });
+    },
+    // 选择其他公司商品分类，自动带出编号
+    changeConfigForm(e) {
+      this.goodsTypeForm.dictCode = e;
+    },
+    addConfigList() {
+      this.configList.push({
+        label: "",
+        code: "",
+      });
+    },
+    deleteConfigList(item) {
+      var index = this.configList.indexOf(item);
+      if (item !== -1) {
+        this.configList.splice(index, 1);
+      }
+    },
+    handlleGoodsTypeSub(refName) {
+      //id为空，新建
+      this.$refs[refName].validate((valid) => {
+        if (valid) {
+          // const URL=''
+          if (this.chooseOther) {
+            // 选其他公司
+            this.$request
+              .get(this.api.addGoodsTypeGet + this.goodsTypeForm.dictName)
+              .then(() => {
+                this.closeDialogConfig();
+                this.$message.success("操作成功！");
+                this.goodsOwnType();
+              });
+          } else {
+            //本公司录入
+            this.$request
+              .post(this.api.addGoodsType, this.goodsTypeForm)
+              .then(() => {
+                this.closeDialogConfig();
+                this.$message.success("操作成功！");
+                this.goodsOwnType();
+              });
+          }
+        } else {
+          return false;
+        }
+      });
+    },
+    closeDialogConfig() {
+      this.visibleGoodsConfig = false;
+      this.$refs["goodsConfig"].resetFields();
+      this.goodsTypeForm = {};
+    },
     // 清理无关图片
-    clearPic(){
-      this.$request.get(this.api.clearPic).then(()=>{
-        this.$message.success("操作成功！")
-      })
-    }
+    clearPic() {
+      this.$request.get(this.api.clearPic).then(() => {
+        this.$message.success("操作成功！");
+      });
+    },
   },
 };
 </script>
@@ -513,5 +691,18 @@ export default {
   width: 100px;
   height: 100px;
   margin-right: 10px;
+}
+
+.config-form /deep/ .el-form-item__content {
+  display: flex;
+  align-items: center;
+}
+
+.delete_icon {
+  margin-left: 2%;
+}
+.add_icon {
+  width: 24px;
+  height: 24px;
 }
 </style>

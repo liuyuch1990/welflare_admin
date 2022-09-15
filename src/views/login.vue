@@ -15,14 +15,6 @@
         <span>福利电商管理平台</span>
       </div>
       <div class="flex-between">
-        <!-- <div class="content_left">
-          <p class="content_left_title">章鱼云</p>
-          <p class="content_left_subTitle">构建万物互联 赋能5G时代</p>
-          <p class="content_left_info">
-            专注可视化开发，让数据栩栩如生
-            提供工业物联网平台、智慧工厂、智慧园区、能源动力、定制化开发等专业物联网服务
-          </p>
-        </div> -->
         <div class="content_right">
           <div class="content_right-bg relative">
             <div class="content_right-form absolute">
@@ -92,10 +84,7 @@ export default {
       }
     };
     return {
-      form: {
-        userPhone: "15130348585",
-        userPwd: "111111",
-      },
+      form: {},
       rules: {
         userPhone: [{ validator: validateUserPhone, trigger: "blur" }],
         userPwd: [{ required: true, message: "请输入密码", trigger: "blur" }],

@@ -1,7 +1,7 @@
 <!--
  * @Author: 1vv
  * @Date: 2021-11-08 18:20:15
- * @LastEditTime: 2022-02-23 16:56:50
+ * @LastEditTime: 2022-03-08 17:40:51
  * @LastEditors: Please set LastEditors
  * @Description: 额度管理-礼品卡种类
  * @FilePath: \online-shop-admin\src\views\giftWallet.vue
@@ -13,8 +13,11 @@
       <el-form label-position="top" :model="queryParams" ref="queryForm">
         <el-row :gutter="24">
           <el-col :span="4">
-            <el-form-item label="礼品卡种类" prop="cardName">
-              <el-input size="small" v-model="queryParams.cardName"></el-input>
+            <el-form-item label="礼品卡种类" prop="cardTypeName">
+              <el-input
+                size="small"
+                v-model="queryParams.cardTypeName"
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -58,14 +61,14 @@
             <!-- 表格 -->
             <el-table v-loading="loading" :data="tableData">
               <el-table-column
-                prop="quotaId"
+                prop="cardTypeId"
                 align="center"
                 label="编号"
                 :show-overflow-tooltip="true"
               >
               </el-table-column>
               <el-table-column
-                prop="cardName"
+                prop="cardTypeName"
                 align="center"
                 label="礼品卡种类"
                 :show-overflow-tooltip="true"
@@ -109,20 +112,20 @@
         :close-on-click-modal="false"
       >
         <el-form :model="form" ref="kindWalletForm" :rules="rules">
-          <el-form-item label="礼品卡种类" prop="cardName">
-            <el-input v-model="form.cardName"></el-input>
+          <el-form-item label="礼品卡种类" prop="cardTypeName">
+            <el-input v-model="form.cardTypeName"></el-input>
           </el-form-item>
           <span class="card-tips"
             >礼品卡额度设置，即礼品卡可兑换的商品类别及数量</span
           >
           <el-form-item
-            v-for="item in typeNameList"
-            :key="item.goodaType"
-            :label="item.typeName"
+            v-for="item in form.typeQuotaVoList"
+            :key="item.dictCode"
+            :label="item.dictName"
             :prop="item.key"
           >
             <el-input-number
-              v-model="form[item.key]"
+              v-model="item.typeQuota"
               controls-position="right"
               size="small"
               style="width: 100%"
@@ -130,56 +133,6 @@
               :min="0"
             ></el-input-number>
           </el-form-item>
-          <!-- <el-form-item label="A类商品数量" prop="quotaA">
-            <el-input-number
-              v-model="form.quotaA"
-              controls-position="right"
-              size="small"
-              style="width: 100%"
-              placeholder="请输入数量"
-              :min="0"
-            ></el-input-number>
-          </el-form-item>
-          <el-form-item label="B类商品数量" prop="quotaB">
-            <el-input-number
-              v-model="form.quotaB"
-              controls-position="right"
-              size="small"
-              style="width: 100%"
-              placeholder="请输入数量"
-              :min="0"
-            ></el-input-number>
-          </el-form-item>
-          <el-form-item label="C类商品数量" prop="quotaC">
-            <el-input-number
-              v-model="form.quotaC"
-              controls-position="right"
-              size="small"
-              style="width: 100%"
-              :min="0"
-              placeholder="请输入数量"
-            ></el-input-number>
-          </el-form-item>
-          <el-form-item label="D类商品数量" prop="quotaD">
-            <el-input-number
-              v-model="form.quotaD"
-              controls-position="right"
-              size="small"
-              style="width: 100%"
-              :min="0"
-              placeholder="请输入数量"
-            ></el-input-number>
-          </el-form-item>
-          <el-form-item label="E类商品数量" prop="quotaE">
-            <el-input-number
-              v-model="form.quotaE"
-              controls-position="right"
-              size="small"
-              style="width: 100%"
-              :min="0"
-              placeholder="请输入数量"
-            ></el-input-number>
-          </el-form-item> -->
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="closeDialog">取 消</el-button>
@@ -193,18 +146,13 @@
 </template>
 
 <script>
-import { GoodsTypeVariable } from "@/utils/Variable";
 export default {
   data() {
     return {
       tableData: [],
       form: {
-        cardName: undefined,
-        quotaA: undefined,
-        quotaB: undefined,
-        quotaC: undefined,
-        quotaD: undefined,
-        quotaE: undefined,
+        cardTypeName: undefined,
+        typeQuotaVoList: [],
       },
       queryParams: {
         pageNum: 1,
@@ -232,10 +180,9 @@ export default {
         },
       ],
       rules: {
-        cardName: [
+        cardTypeName: [
           { required: true, message: "请输入礼品卡种类", trigger: "blur" },
         ],
-        quotaA: [{ required: true, message: "请输入商品", trigger: "blur" }],
       },
       activeName: "全部",
       total: 0,
@@ -243,13 +190,11 @@ export default {
       title: "",
       loading: true,
       multiple: true,
-      typeNameList: [],
     };
   },
   mounted() {
-    this.typeNameList = GoodsTypeVariable;
     this.getList();
-    console.log("回显", this.form);
+    this.getQuatoList();
   },
   methods: {
     getList() {
@@ -263,20 +208,19 @@ export default {
         this.loading = false;
       });
     },
+    // 获取本公司额度
+    getQuatoList() {
+      this.$request.get(this.api.goodsOwnTypeList).then((res) => {
+        this.form.typeQuotaVoList = res.data;
+      });
+    },
     // 额度分类
     quotaFormatter(row) {
-      console.log(row);
       let quataType = "";
-      GoodsTypeVariable.forEach((k) => {
-        Object.keys(row).forEach((j) => {
-          if (k.key == j && row[k.key]) {
-            // quataType += k.typeName+':' + row[k.key] +"份"
-            quataType += `<p>${k.typeName}:${row[k.key]}份;</p>`;
-          }
-        });
+      row.typeQuotaVoList.forEach((k) => {
+        quataType += `<p>${k.goodsTypeName}:${k.typeQuota}份;</p>`;
       });
       row.typeName = quataType;
-      console.log("ff", row.typeName);
       return row.typeName;
     },
     // 新增
@@ -284,40 +228,74 @@ export default {
       this.visibleKindWallet = true;
       this.title = "新增礼品卡种类";
     },
+
     addSubmit() {
-      this.$request
-        .post(this.api.createKindCard, this.form)
-        .then(() => {
-          this.$message.success("操作成功！");
-          this.getList();
-          this.closeDialog();
-        })
-        .catch((err) => {
-          this.$message.error(err.message);
-        });
+      var params = {
+        typeQuotaVoList: [],
+        cardTypeName: this.form.cardTypeName,
+      };
+      this.form.typeQuotaVoList.forEach((item) => {
+        if (item.typeQuota != undefined) {
+          params.typeQuotaVoList.push({
+            goodsType: item.dictCode,
+            typeQuota: item.typeQuota,
+          });
+        }
+      });
+
+      this.$request.post(this.api.createKindCard, params).then(() => {
+        this.$message.success("操作成功！");
+        this.getList();
+        this.getQuatoList();
+        this.closeDialog();
+      });
     },
     // 编辑额度
     handleUpdate(row) {
       this.title = "编辑礼品卡种类";
       this.visibleKindWallet = true;
       this.form = JSON.parse(JSON.stringify(row));
-      console.log("编辑", this.form);
+      this.$request.get(this.api.goodsOwnTypeList).then((res) => {
+        var temp = [];
+        this.form.typeQuotaVoList.forEach((v) => {
+          temp.push(v.goodsType);
+        });
+        res.data.forEach((k) => {
+          if (!temp.includes(k.dictCode)) {
+            this.form.typeQuotaVoList.push({
+              dictName: k.dictName,
+              goodsType: k.dictCode,
+              goodsTypeName: k.dictName,
+              typeQuota: k.typeQuota,
+            });
+          }
+        });
+      });
     },
     updateSubmit() {
-      this.$request
-        .post(this.api.updateKindCard, this.form)
-        .then(() => {
-          this.$message.success("操作成功！");
-          this.closeDialog();
-          this.getList();
-        })
-        .catch((err) => {
-          this.$message.error(err.message);
-        });
+      const params = {
+        cardTypeName: this.form.cardTypeName,
+        cardTypeId: this.form.cardTypeId,
+        typeQuotaVoList: [],
+      };
+      console.log(this.form.typeQuotaVoList);
+      this.form.typeQuotaVoList.forEach((item) => {
+        if (item.typeQuota != undefined) {
+          params.typeQuotaVoList.push({
+            goodsType: item.goodsType,
+            typeQuota: item.typeQuota,
+          });
+        }
+      });
+      this.$request.post(this.api.updateKindCard, params).then(() => {
+        this.$message.success("操作成功！");
+        this.closeDialog();
+        this.getList();
+      });
     },
     submit(refName) {
       this.$refs[refName].validate((valid) => {
-        if (!this.form.quotaId) {
+        if (!this.form.cardTypeId) {
           //id为空，新建
           if (valid) {
             this.addSubmit();
@@ -340,13 +318,9 @@ export default {
     closeDialog() {
       this.visibleKindWallet = false;
       // this.$refs["kindWalletForm"].resetFields();
+      this.getQuatoList()
       this.form = {
-        cardName: undefined,
-        quotaA: undefined,
-        quotaB: undefined,
-        quotaC: undefined,
-        quotaD: undefined,
-        quotaE: undefined,
+        cardTypeName: undefined,
       };
     },
   },

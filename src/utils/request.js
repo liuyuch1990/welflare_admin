@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-10-31 10:58:52
- * @LastEditTime: 2022-02-22 18:12:43
+ * @LastEditTime: 2022-03-30 18:33:31
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \headquarters-oil-frontend\src\utils\request.js
@@ -36,7 +36,9 @@ service.interceptors.request.use(config => {
 // 响应拦截器
 service.interceptors.response.use(response => {
     const isToken = response.headers.token
-    console.log(response.headers.token);
+    if (response.headers.flag) {
+        sessionStorage.setItem('onlineAdmin-flag', response.headers.flag)
+    }
     if (!isToken) {
         Message.error("服务器异常，请稍后再试!")
     } else {
@@ -72,13 +74,13 @@ service.interceptors.response.use(response => {
         return Promise.reject(response.data)
     } else if (code == 50000) {
         Message({
-            message: "系统异常，请稍后再试",
+            message: response.data.message,
             type: 'error'
         })
         return Promise.reject(response.data)
     } else if (code == 50001) {
         Message({
-            message: "系统后台异常，请稍后再试",
+            message: "后台异常，请稍后再试！",
             type: 'error'
         })
         return Promise.reject(response.data)

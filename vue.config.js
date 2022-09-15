@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-10-22 10:38:26
- * @LastEditTime: 2022-02-22 14:59:14
+ * @LastEditTime: 2022-04-08 17:23:41
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \deviceManagementPlatform\vue.config.js
@@ -15,7 +15,7 @@ module.exports = {
     devServer: {
         port: 8080,
         host: 'localhost',
-        // host: '192.168.1.114',
+        // host: '192.168.1.111',
         open: false,
         https: false,
         proxy: {

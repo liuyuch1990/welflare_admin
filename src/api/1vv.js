@@ -1,7 +1,7 @@
 /*
  * @Author: 1vv
  * @Date: 2021-11-01 15:20:10
- * @LastEditTime: 2022-02-22 16:17:24
+ * @LastEditTime: 2022-03-30 17:57:01
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \online-shop\src\api\1vv.js
@@ -30,4 +30,9 @@ export const APIV = {
     updateUserInfo: "/user/update", //用户信息-修改
     downloadUser: "/user/exportExcel", //用户信息-导出
     clearPic: "/goods/clearPic", // 清理无用图片
+    addGoodsType: "/com/addGoodsType", // 新建商品种类并绑定到公司
+    addGoodsTypeGet: "/com/addGoodsType/", // 添加商品分类
+    goodsOwnTypeList: "/com/queryGoodsTypeDropDownList", //查用户对应公司的礼品卡种类
+    goodsAllTypeList: "/com/queryTypeAll", //查所有公司商品类别
+    deleteGoodsType: "/com/deleteGoodsType/", //删除商品类别
 }
