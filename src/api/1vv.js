@@ -10,6 +10,7 @@
 export const APIV = {
     login: '/user/admin/login', //管理员登录
     goodsList: '/goods/list', //商品-列表
+    swiperList: '/swiper/page', //商品-列表
     addGoods: '/goods/addGoods', // 商品-新增
     selectGoods: '/goods/queryById/', // 商品-查看详情
     updateGoods: '/goods/editGoods', // 商品-编辑

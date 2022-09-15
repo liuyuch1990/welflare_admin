@@ -165,10 +165,7 @@
             </div>
           </el-form-item>
           <el-form-item label="价格" prop="goodsPrice">
-            <el-input v-model="form.goodsPrice"></el-input>
-          </el-form-item>
-          <el-form-item label="库存" prop="goodsSum">
-            <el-input v-model="form.goodsSum"></el-input>
+            <el-input v-model="form.sort"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -258,7 +255,7 @@ export default {
     },
     getList() {
       this.loading = true;
-      this.$request.post(this.api.goodsList, this.queryParams).then((res) => {
+      this.$request.post(this.api.swiperList, this.queryParams).then((res) => {
         this.tableData = res.data.rows;
         this.total = res.data.total;
         this.loading = false;
