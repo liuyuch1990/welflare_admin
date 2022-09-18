@@ -111,25 +111,25 @@
           >
         </el-form-item>
       </el-form>
-      <el-popover placement="top" width="160" v-model="visibleDwnload">
-        <p>确定要导出订单信息吗？</p>
-        <div style="text-align: right; margin: 0">
-          <el-button size="mini" type="text" @click="visibleDwnload = false"
-            >取消</el-button
-          >
-          <el-button type="primary" size="mini" @click="handleOut"
-            >确定</el-button
-          >
-        </div>
-        <el-button
-          slot="reference"
-          type="primary"
-          icon="el-icon-plus"
-          size="small"
-          :disabled="!multiple"
-          >批量导出</el-button
-        >
-      </el-popover>
+<!--      <el-popover placement="top" width="160" v-model="visibleDwnload">-->
+<!--        <p>确定要导出订单信息吗？</p>-->
+<!--        <div style="text-align: right; margin: 0">-->
+<!--          <el-button size="mini" type="text" @click="visibleDwnload = false"-->
+<!--            >取消</el-button-->
+<!--          >-->
+<!--          <el-button type="primary" size="mini" @click="handleOut"-->
+<!--            >确定</el-button-->
+<!--          >-->
+<!--        </div>-->
+<!--        <el-button-->
+<!--          slot="reference"-->
+<!--          type="primary"-->
+<!--          icon="el-icon-plus"-->
+<!--          size="small"-->
+<!--          :disabled="!multiple"-->
+<!--          >批量导出</el-button-->
+<!--        >-->
+<!--      </el-popover>-->
       &nbsp;
       <!-- <el-button
         @click="handleImport"
@@ -139,25 +139,25 @@
         >批量发货</el-button
       > -->
       &nbsp;
-      <el-popover placement="top" width="160" v-model="visibleSendNone">
-        <p>确定空发货吗？</p>
-        <div style="text-align: right; margin: 0">
-          <el-button size="mini" type="text" @click="visibleSendNone"
-            >取消</el-button
-          >
-          <el-button type="primary" size="mini" @click="handleSendNone"
-            >确定</el-button
-          >
-        </div>
-        <el-button
-          slot="reference"
-          type="primary"
-          icon="el-icon-plus"
-          size="small"
-          :disabled="multiple"
-          >空发货</el-button
-        >
-      </el-popover>
+<!--      <el-popover placement="top" width="160" v-model="visibleSendNone">-->
+<!--        <p>确定空发货吗？</p>-->
+<!--        <div style="text-align: right; margin: 0">-->
+<!--          <el-button size="mini" type="text" @click="visibleSendNone"-->
+<!--            >取消</el-button-->
+<!--          >-->
+<!--          <el-button type="primary" size="mini" @click="handleSendNone"-->
+<!--            >确定</el-button-->
+<!--          >-->
+<!--        </div>-->
+<!--        <el-button-->
+<!--          slot="reference"-->
+<!--          type="primary"-->
+<!--          icon="el-icon-plus"-->
+<!--          size="small"-->
+<!--          :disabled="multiple"-->
+<!--          >空发货</el-button-->
+<!--        >-->
+<!--      </el-popover>-->
     </div>
     <div class="order">
       <el-tabs v-model="activeName" @tab-click="handleClick">
@@ -217,7 +217,26 @@
               <template slot-scope="scope">
                 <span v-if="scope.row.status == 0">未发货</span>
                 <span v-else-if="scope.row.status == 1">已发货</span>
+                <span v-else-if="scope.row.status == 2">已取消</span>
+                <span v-else-if="scope.row.status == 3">待退货</span>
+                <span v-else-if="scope.row.status == 4">待换货</span>
+                <span v-else-if="scope.row.status == 5">已退货</span>
+                <span v-else-if="scope.row.status == 6">已换货</span>
                 <span v-else>已取消</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="rollReason" label="退换货原因" align="center">
+          </el-table-column>
+            <el-table-column prop="appointment" label="预约时间" align="center">
+            </el-table-column>
+            <el-table-column
+                    label="退换货图片"
+                    :show-overflow-tooltip="true"
+            >
+              <template slot-scope="scope">
+                  <div class="orderprovos-img">
+                    <img :src="$target + scope.row.rollPics" alt="" />
+                  </div>
               </template>
             </el-table-column>
             <el-table-column

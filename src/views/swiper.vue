@@ -9,172 +9,58 @@
 <template>
   <div class="container">
     <div class="content">
-      <div>
-        <el-row :gutter="10" class="rowsBtn">
-          <el-col :span="1.5">
-            <el-button
-              type="primary"
-              icon="el-icon-plus"
-              size="small"
-              @click="handleAdd"
-              >发布商品</el-button
+      <el-form :model="form"  ref="goodsForm">
+        <el-form-item label="公司名称">
+          <el-input v-model="form.comNum"></el-input>
+        </el-form-item>
+        <el-form-item label="滚动通知" prop="goodsContent">
+          <el-input
+                  v-model="form.indexText"
+                  type="textarea"
+                  placeholder="长度在100个字符以内"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="轮播图(最多上传5张)">
+          <br />
+          <div class="flex flex-wrap">
+            <!-- 封面 -->
+            <el-upload
+                    :class="noneAddImgCover ? '' : 'disUoloadSty'"
+                    style="margin-right: 10px"
+                    ref="uploadFileCover"
+                    action="aaaa"
+                    accept="image/jpeg,image/gif,image/png"
+                    list-type="picture-card"
+                    :file-list="images"
+                    :http-request="uploadGoodsImgCover"
+                    :before-upload="beforeAvatarUpload"
+                    :on-remove="handleRemoveCover"
+                    :on-change="dealImgChangeCover"
             >
-          </el-col>
-        </el-row>
-        <!-- 表格 -->
-        <el-row :gutter="20" style="margin-top: 2%">
-          <el-col :span="4" :xs="24" :sm="24" :lg="24">
-            <el-tabs v-model="activeName" @tab-click="handleClickTab">
-              <el-tab-pane
-                :label="item.label"
-                :name="item.name"
-                v-for="(item, index) in tableTab"
-                :key="index"
-              >
-                <!-- 表格 -->
-                <el-table v-loading="loading" :data="tableData" row-key="id">
-                  <!-- <el-table-column type="selection" width="55" align="center" /> -->
-                  <el-table-column
-                    prop="goodsName"
-                    align="center"
-                    label="商品"
-                    :show-overflow-tooltip="true"
-                  >
-                    <template slot-scope="scoped">
-                      <div class="flex-between">
-                        <img
-                          class="goods-img"
-                          :src="$target + scoped.row.imagePath"
-                          alt=""
-                        />
-                        <span>{{ scoped.row.image }}</span>
-                      </div>
-                    </template>
-                  </el-table-column>
-                  <el-table-column
-                    prop="sort"
-                    align="center"
-                    label="排序"
-                    :show-overflow-tooltip="true"
-                  >
-                  </el-table-column>
-                  <el-table-column align="center" label="操作" width="180px">
-                    <template slot-scope="scope">
-                      <el-button
-                        size="mini"
-                        type="text"
-                        icon="el-icon-setting"
-                        @click="handleUpdate(scope.row)"
-                        >编辑</el-button
-                      >
-                      &nbsp;
-                      <el-popconfirm
-                        :title="'确定要删除<' + scope.row.goodsName + '>吗？'"
-                        @confirm="handleDelete(scope.row)"
-                      >
-                        <el-button
-                          slot="reference"
-                          size="mini"
-                          type="text"
-                          icon="el-icon-delete"
-                          >删除</el-button
-                        >
-                      </el-popconfirm>
-                    </template>
-                  </el-table-column>
-                </el-table>
-              </el-tab-pane>
-            </el-tabs>
-          </el-col>
-        </el-row>
-        <pagination
-          v-show="total > 0"
-          class="pagination"
-          :total="total"
-          :page.sync="queryParams.pageNum"
-          :limit.sync="queryParams.pageSize"
-          @pagination="getList"
-        />
+              <i class="el-icon-plus">轮播图</i>
+            </el-upload>
+            <!-- 详情图 -->
+<!--            <el-upload-->
+<!--                    :class="noneAddImg ? '' : 'disUoloadSty'"-->
+<!--                    ref="uploadFile"-->
+<!--                    action-->
+<!--                    accept="image/jpeg,image/gif,image/png"-->
+<!--                    list-type="picture-card"-->
+<!--                    :http-request="uploadGoodsImg"-->
+<!--                    :before-upload="beforeAvatarUpload"-->
+<!--                    :on-change="dealImgChange"-->
+<!--                    :on-remove="handleRemove"-->
+<!--            >-->
+<!--              <i class="el-icon-plus"></i>-->
+<!--            </el-upload>-->
+          </div>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="handlleSubmit()"
+        >确 定</el-button
+        >
       </div>
-      <el-dialog
-        width="300"
-        :title="title"
-        @close="closeDialog"
-        :visible.sync="visibleGoods"
-        :close-on-press-escape="false"
-        :close-on-click-modal="false"
-      >
-        <el-form :model="form" :rules="rules" ref="goodsForm">
-          <el-form-item label="商品分类" prop="goodsType">
-            <el-select
-              v-model="form.goodsType"
-              placeholder="请选择"
-              style="width: 100%"
-            >
-              <el-option
-                v-for="item in typeOptions"
-                :key="item.goodsType"
-                :label="item.typeName"
-                :value="item.goodsType"
-              >
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="商品名称" prop="goodsName">
-            <el-input v-model="form.goodsName"></el-input>
-          </el-form-item>
-          <el-form-item label="商品描述" prop="goodsContent">
-            <el-input
-              v-model="form.goodsContent"
-              type="textarea"
-              placeholder="长度在100个字符以内"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="商品图(最多上传5张)" v-if="showPic">
-            <br />
-            <div class="flex flex-wrap">
-              <!-- 封面 -->
-              <el-upload
-                :class="noneAddImgCover ? '' : 'disUoloadSty'"
-                style="margin-right: 10px"
-                ref="uploadFileCover"
-                action="aaaa"
-                accept="image/jpeg,image/gif,image/png"
-                list-type="picture-card"
-                :http-request="uploadGoodsImgCover"
-                :before-upload="beforeAvatarUpload"
-                :on-remove="handleRemoveCover"
-                :on-change="dealImgChangeCover"
-              >
-                <i class="el-icon-plus">商品封面</i>
-              </el-upload>
-              <!-- 详情图 -->
-              <el-upload
-                :class="noneAddImg ? '' : 'disUoloadSty'"
-                ref="uploadFile"
-                action
-                accept="image/jpeg,image/gif,image/png"
-                list-type="picture-card"
-                :http-request="uploadGoodsImg"
-                :before-upload="beforeAvatarUpload"
-                :on-change="dealImgChange"
-                :on-remove="handleRemove"
-              >
-                <i class="el-icon-plus"></i>
-              </el-upload>
-            </div>
-          </el-form-item>
-          <el-form-item label="价格" prop="goodsPrice">
-            <el-input v-model="form.sort"></el-input>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="closeDialog()">取 消</el-button>
-          <el-button type="primary" @click="handlleSubmit('goodsForm')"
-            >确 定</el-button
-          >
-        </div>
-      </el-dialog>
     </div>
   </div>
 </template>
@@ -184,7 +70,7 @@ import { GoodsTypeVariable } from "@/utils/Variable";
 export default {
   data() {
     return {
-      form: { pics: [] },
+      form: {},
       showImgList: 4, //默认4张图片
       showPic: true, //新增显示图片，修改不显示图片
       imgSort: 1, //图片排序
@@ -205,6 +91,7 @@ export default {
           label: "全部",
         }
       ],
+      images: [],
       activeName: "2",
       total: 0,
       visibleGoods: false,
@@ -236,8 +123,7 @@ export default {
     };
   },
   mounted() {
-    this.getList();
-    this.typeNameOptions();
+    this.getForm();
   },
   methods: {
     typeNameOptions() {
@@ -253,25 +139,37 @@ export default {
       });
       return typeName;
     },
-    getList() {
+    getForm() {
       this.loading = true;
-      this.$request.post(this.api.swiperList, this.queryParams).then((res) => {
-        this.tableData = res.data.rows;
-        this.total = res.data.total;
-        this.loading = false;
+      this.$request.get(this.api.queryIndexPics, this.form).then((res) => {
+        this.form = res.data
+        var i = 0;
+        for (i=0;i<5;) {
+          i = i + 1;
+          if (res.data["indexPic" + i]) {
+            this.images.push({
+              url: res.data["indexPic" + i],
+              name: i,
+            });
+          }
+        }
       });
     },
     //   上传图片地址-封面
     uploadGoodsImgCover(param) {
       var formData = new FormData();
       formData.append("file", param.file);
-      this.$request.post(this.api.uploadGoods, formData).then((res) => {
+      this.$request.post(this.api.uploadPics, formData).then((res) => {
         const temp = {
           id: param.file.uid,
           picId: res.data,
           isCover: 1,
           picSort: 0,
         };
+        this.images.push({
+          url: this.$target + res.data,
+          name: this.images.length + 1,
+        });
         this.removeImgCover.push(temp);
         console.log(this.removeImgCover);
       });
@@ -364,46 +262,21 @@ export default {
     // },
     // // 修改
     // 提交按钮
-    handlleSubmit(refName) {
-      //id为空，新建
-      this.$refs[refName].validate((valid) => {
-        if (valid) {
-          if (this.form.goodsId) {
-            console.log("编辑");
-            this.$request.post(this.api.updateGoods, this.form).then(() => {
-              this.closeDialog();
-              this.$message.success("操作成功！");
-              this.getList();
-            });
-          } else {
-            console.log("新增");
-            if (this.removeImgCover.length > 0) {
-              this.form.pics.push(...this.removeImgCover);
-            }
-            if (this.removeImg.length > 0) {
-              this.form.pics.push(...this.removeImg);
-            }
-
-            if (this.form.pics.length <= 0) {
-              this.$message.info("请上传图片");
-            } else {
-              this.$request.post(this.api.addGoods, this.form).then(() => {
-                this.closeDialog();
-                this.$message.success("操作成功！");
-                this.getList();
-              });
-            }
-          }
-        } else {
-          return false;
-        }
+    handlleSubmit() {
+      var i = 0;
+      for (i=0;i< this.images.length; i++) {
+        var index = i + 1
+        this.form["indexPic" + index] = this.images[i].url
+      }
+      this.$request.post(this.api.saveIndex, this.form).then(() => {
+        this.$message.success("操作成功！");
       });
     },
     // 删除
     handleDelete(row) {
       this.$request.get(this.api.deleteGoods + row.goodsId).then(() => {
         this.$message.success("操作成功！");
-        this.getList();
+        // this.getList();
       });
     },
     closeDialog() {
@@ -438,7 +311,6 @@ export default {
       } else {
         this.queryParams.sellOut = "";
       }
-      this.getList();
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
