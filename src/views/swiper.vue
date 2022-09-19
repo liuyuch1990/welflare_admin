@@ -208,9 +208,9 @@ export default {
 
     // 删除本地(封面)图片的回调
     handleRemoveCover(file, fileList) {
-      this.removeImgCover.forEach((v, iv) => {
-        if (v.isCover == 1) {
-          this.removeImgCover.splice(iv, 1);
+      this.images.forEach((v, iv) => {
+        if (v.name == file.name) {
+          this.images[iv].url = '';
         }
       });
       this.noneAddImgCover = fileList.length < 1;
